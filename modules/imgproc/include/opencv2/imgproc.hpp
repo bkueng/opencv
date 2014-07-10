@@ -1517,6 +1517,44 @@ CV_EXPORTS Ptr<GeneralizedHoughGuil> createGeneralizedHoughGuil();
 //! Performs linear blending of two images
 CV_EXPORTS void blendLinear(InputArray src1, InputArray src2, InputArray weights1, InputArray weights2, OutputArray dst);
 
+
+
+//! Superpixel implementation: "SEEDS: Superpixels Extracted via Energy-Driven Sampling", ECCV 2012
+class CV_EXPORTS_W SuperpixelSEEDS : public Algorithm
+{
+public:
+    //TODO: interface & documentation...
+
+    /*!
+     *
+     * @param img           input image. supported formats: CV_8U, CV_16U, CV_32F
+     */
+    CV_WRAP virtual void iterate(InputArray img, int num_iterations=4) = 0;
+
+    /*!
+     *
+     * @param labels_out    Return: A CV_32UC1 integer array containing the labels
+     *                      labels are in the range [0, ] FIXME: range..
+     */
+    CV_WRAP virtual void getLabels(OutputArray labels_out) = 0;
+
+    /*!
+     * get an image mask with the contour of the superpixels. useful for test output.
+     * @param image         Return: CV_8UC1 image mask where -1 is a superpixel border
+     *                      pixel and 0 an interior pixel.
+     * @parame thick_line   if false, border is only one pixel wide, otherwise
+     *                      all border pixels are masked
+     */
+    CV_WRAP virtual void getLabelContourMask(OutputArray image, bool thick_line = false) = 0;
+
+    virtual ~SuperpixelSEEDS() {}
+};
+
+//! Creates a SuperpixelSEEDS object.
+CV_EXPORTS_W Ptr<SuperpixelSEEDS> createSuperpixelSEEDS(
+    int image_width, int image_height, int image_channels,
+    int seeds_w, int seeds_h, int nr_levels, int histogram_bins=5);
+
 } // cv
 
 #endif
